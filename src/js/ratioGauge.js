@@ -1,4 +1,4 @@
-(function () {
+(function (Ext) {
     var WIDGET_NAME = 'RC.ui.RatioGuage'
     var HEATGUAGE_NAME = 'RC.ui.HeateGuage'
 
@@ -62,7 +62,7 @@
         }
     }
 
-    function itemsFactory(report, state) {
+    function itemsFactory(report, state, clickHandler) {
         return [{
             xtype: 'heatgauge',
             valueField: 'value',
@@ -107,19 +107,16 @@
             tooltip: '<p>' + getChoiceFromState(state, 'Registrets mål på <b>' + report.upperLimit + '%</b> är inte uppnått ännu', 'Registrets mål på <b>' + report.upperLimit + '%</b> är uppnått!', 'Beskrivande indikator som saknar målvärde') + '</p><i>Klicka för komplett fördelning</i>',
             // height: 40,
             tpl:'<div style="position:relative;">' +
-            '<span style="font-size: 24px; line-height: 24px; float: left; margin: 0 8px 0 6px;">{value}</span>' +
-                '<span style="width: 70%; float:left; overflow: hidden; white-space: normal; font-size: 11px; line-height: 12px;">{text}</span>' +
-                '<span style="font-size: 24px; line-height: 24px; font-family: fontawesome; float: right; margin: 1px; text-shadow: 1px 1px 0px' +
-                getChoiceFromState(state, '#f00; color: #F19999;">&#xf071;', '#1d9d74; color: #4c4;">&#xf00c;', ';">') + '</span>' +
+                '<div class="value-text pull-left">{value}</div>' +
+                '<div class="gauge-desc pull-left">{text}</div>' +
+                '<div class="gauge-icon pull-right">' + getChoiceFromState(state, '&#xf071;', '&#xf00c;', '') + '</div>' +
                 '</div>',
             listeners: {
                 beforerender: function (bt) {
                     var tpl = new Ext.XTemplate(bt.tpl);
                     bt.setText(tpl.apply(bt.data));
                 },
-                click: function () {
-                    // me.loadMainChart(id, targetChart, report);
-                }
+                click: clickHandler
             }
         }];
     }
@@ -142,9 +139,10 @@
 
                 constructor: function (config) {
                     var report = config.store;
+                    var clickHandler = config.onClick;
                     var state = Ext.isDefined(report.upperLimit) ? ((report.value > report.upperLimit ? !report.invert : report.invert) ? 'success' : 'danger') : '';
                     this.style.borderColor = getChoiceFromState(state, '#ebccd1', '#d6e9c6', '#bce8f1');
-                    config.items = itemsFactory(report, state);
+                    config.items = itemsFactory(report, state, clickHandler);
                     this.callParent(arguments);
                 }
             }
@@ -153,10 +151,12 @@
     }
 
     function init() {
-        Ext.util.CSS.createStyleSheet('.gauge-btn .x-btn-inner { display: block; }');
+        if(!Ext)
+        return;
+        // Ext.util.CSS.createStyleSheet('');
         !Ext.ClassManager.isCreated(HEATGUAGE_NAME) && defineHeatGauge();
         !Ext.ClassManager.isCreated(WIDGET_NAME) && defineRatioGauge();
     }
 
     init();
-}());
+}(window.Ext));

@@ -1,0 +1,48 @@
+.gauge-btn .x-btn-inner {
+    display: block;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.gauge-btn .value-text {
+    width: 38px;       
+    font-size: 24px;
+    line-height: 24px;
+    float: left;
+    margin: 0 8px 0 6px;
+}
+
+.gauge-btn .gauge-desc {
+    width: 70%;  /* fallback % for IE8 */
+    width: calc(100% - 80px);
+    float: left;
+    overflow: hidden;
+    white-space: normal;
+    font-size: 11px;
+    line-height: 12px;
+}
+
+.gauge-btn .gauge-icon {
+    width: 26px;
+    font-size: 24px;
+    line-height: 24px;
+    font-family: fontawesome;
+    float: right;
+    margin: 1px;
+}
+
+.gauge-btn.gauge-btn-danger .gauge-icon {
+    text-shadow: 1px 1px 0px #f00;
+    color: #F19999;
+}
+
+.gauge-btn.gauge-btn-success .gauge-icon {
+    text-shadow: 1px 1px 0px #1d9d74;
+    color: #4c4;
+}
