@@ -12,7 +12,9 @@ config = {
 
 gulp.task('start:api', (cb) => {
     apiServer = nodemon({
-        script: 'dev-server.js'
+        script: 'dev-server.js',
+        watch: ['dev-server.js'],
+        tasks: ['watch']
     });
     cb();
 });
@@ -24,6 +26,9 @@ gulp.task('serve', (cb) => {
             baseDir: './src'
         }
     });
+    cb();
+});
+gulp.task('watch', ['serve'],(cb) => {
     gulp.watch('./src/**/*').on('change', browserSync.reload);
     cb();
 });
@@ -33,4 +38,4 @@ process.on('exit', function () {
     apiServer.kill();
 });
 
-gulp.task('default', ['serve','start:api']);
+gulp.task('default', ['watch', 'start:api']);

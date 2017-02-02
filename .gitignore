@@ -4,3 +4,4 @@ dist
 jsconfig.json
 npm-debug.log
 debug.log
+.sencha
