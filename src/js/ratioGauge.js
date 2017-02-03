@@ -139,7 +139,7 @@
 
                 constructor: function (config) {
                     var report = config.store;
-                    var clickHandler = config.onClick;
+                    var clickHandler = typeof config.onClick === 'function' ? config.onClick : function(){};
                     var state = Ext.isDefined(report.upperLimit) ? ((report.value > report.upperLimit ? !report.invert : report.invert) ? 'success' : 'danger') : '';
                     this.style.borderColor = getChoiceFromState(state, '#ebccd1', '#d6e9c6', '#bce8f1');
                     config.items = itemsFactory(report, state, clickHandler);
