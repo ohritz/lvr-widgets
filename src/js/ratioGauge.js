@@ -1,6 +1,6 @@
 (function (Ext) {
-    var WIDGET_NAME = 'RC.ui.RatioGuage'
-    var HEATGUAGE_NAME = 'RC.ui.HeateGuage'
+    var WIDGET_NAME = 'RC.ui.RatioGauge';
+    var HEATGUAGE_NAME = 'RC.ui.HeateGuage';
 
     function defineHeatGauge() {
         Ext.define(HEATGUAGE_NAME, {
@@ -9,10 +9,10 @@
             constructor: function (config) {
                 if (config && config.valueField) {
                     var renderer;
-                    if (config.upperLimitField) {
+                    if (config.limitField) {
                         renderer = {
                             renderer: function (sprite, record, attribute, index) {
-                                if (index !== 0 || !record.get(config.upperLimitField)) {
+                                if (index !== 0 || !record.get(config.limitField)) {
                                     return attribute;
                                 }
                                 return attribute; //TEST
@@ -62,7 +62,12 @@
         }
     }
 
+    function getState(report) {
+        return Ext.isDefined(report.limit) ? ((report.value > report.limit ? !report.invert : report.invert) ? 'success' : 'danger') : '';
+    }
+
     function itemsFactory(report, state, clickHandler) {
+        
         return [{
             xtype: 'heatgauge',
             valueField: 'value',
@@ -70,11 +75,10 @@
                 // paddingTop: '5px'
             },
             margin: '8 0 0 0',
-            lowerLimitField: 'lowerLimit',
-            upperLimitField: 'upperLimit',
+            limitField: 'limit',
             invertLimitField: 'invert',
             store: Ext.create('Ext.data.Store', {
-                fields: ['value', 'upperLimit', 'lowerLimit', 'invert'],
+                fields: ['value', 'limit', 'invert'],
                 data: [report]
             }),
             width: 75,
@@ -90,7 +94,7 @@
             allowDepress: false,
             toggleGroup: 'heatg',
             pressedCls: 'gauge-button-pressed',
-            cls: 'gauge-btn gauge-btn' + getChoiceFromState(state, '-danger', '-success', ''),
+            cls: 'gauge-btn gauge-btn' + getChoiceFromState(state, '-danger', '-success', '-info'),
             style: {
                 background: state === 'danger' ? '#f2dede' : state === 'success' ? '#dff0d8' : '#d9edf7',
                 borderLeft: '1px solid #ccc',
@@ -104,7 +108,7 @@
                 value: Ext.util.Format.number(report.value || 0, '0%')
             },
             textAlign: 'left',
-            tooltip: '<p>' + getChoiceFromState(state, 'Registrets mål på <b>' + report.upperLimit + '%</b> är inte uppnått ännu', 'Registrets mål på <b>' + report.upperLimit + '%</b> är uppnått!', 'Beskrivande indikator som saknar målvärde') + '</p><i>Klicka för komplett fördelning</i>',
+            tooltip: '<div>' + getChoiceFromState(state, 'Registrets mål på <b>' + report.limit + '%</b> är inte uppnått ännu', 'Registrets mål på <b>' + report.limit + '%</b> är uppnått!', 'Beskrivande indikator som saknar målvärde') + '</div><i>Klicka för komplett fördelning</i>',
             // height: 40,
             tpl:'<div style="position:relative;">' +
                 '<div class="value-text pull-left">{value}</div>' +
@@ -140,7 +144,7 @@
                 constructor: function (config) {
                     var report = config.store;
                     var clickHandler = typeof config.onClick === 'function' ? config.onClick : function(){};
-                    var state = Ext.isDefined(report.upperLimit) ? ((report.value > report.upperLimit ? !report.invert : report.invert) ? 'success' : 'danger') : '';
+                    var state = getState(report);
                     this.style.borderColor = getChoiceFromState(state, '#ebccd1', '#d6e9c6', '#bce8f1');
                     config.items = itemsFactory(report, state, clickHandler);
                     this.callParent(arguments);
@@ -152,7 +156,7 @@
 
     function init() {
         if(!Ext)
-        return;
+        throw new Error('window.Ext not defined. WidgetScript must be loaded after Ext libs');
         // Ext.util.CSS.createStyleSheet('');
         !Ext.ClassManager.isCreated(HEATGUAGE_NAME) && defineHeatGauge();
         !Ext.ClassManager.isCreated(WIDGET_NAME) && defineRatioGauge();

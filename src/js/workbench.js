@@ -1,6 +1,14 @@
 (function () {
+
+    function round(number, precision) {
+        var factor = Math.pow(10, precision);
+        var tempNumber = number * factor;
+        var roundedTempNumber = Math.round(tempNumber);
+        return roundedTempNumber / factor;
+    };
+
     function getRandom() {
-        return Math.random() * 10;
+        return round(Math.random() * 100, 2);
     }
 
     function getDummyData(id) {
@@ -8,9 +16,8 @@
             id: id || null,
             value: getRandom(),
             description: 'Somethings wrong with the world today. And I don\'t know what it is',
-            upperLimit: getRandom(),
-            lowerLimit: getRandom(),
-            invert: getRandom() < 50 ? true : false
+            limit: getRandom(),
+            invert: (Math.random() * 10) > 7 ? true : false 
         }
     }
 
@@ -18,14 +25,14 @@
         var ret = [];
         var len = amount || 6;
         for (var index = 0; index < len; index++) {
-            ret.push(getDummyData(index));            
+            ret.push(getDummyData(index));
         }
         return ret;
     }
 
     function showRelatedChart(id, chart, data) {
         return function () {
-            // console.log(id, chart, data);
+            console.log(id, chart, data);
         }
     }
 
@@ -46,13 +53,16 @@
         }
         Ext.create('Ext.container.Container', {
             renderTo: 'newWidgetWorkBench',
-            width: '1200px',
+            width: '800px',
             layout: {
                 type: 'column',
                 align: 'center'
             },
-            items: getRatioGuages(8, chart)
-        })
+            items: getRatioGuages(6, chart)
+        });
+        Ext.tip.QuickTipManager.init(true, {
+            dismissDelay: 0
+        });
     }
-    init();
+    // init();
 }());
