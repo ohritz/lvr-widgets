@@ -9,6 +9,7 @@ const order = require('gulp-order');
 const cleancss = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
+const proxy = require('http-proxy-middleware');
 
 var apiServer = null;
 
@@ -20,13 +21,14 @@ config = {
     dist: './dist'
 }
 
-gulp.task('start:api', (cb) => {
-    apiServer = nodemon({
-        script: 'dev-server.js',
-        watch: ['dev-server.js'],
-        tasks: ['watch']
-    });
-    cb();
+var toDevServerProxy = proxy('/stratum', {
+    target: 'http://localhost:3005',
+    logLevel: 'debug'
+});
+
+gulp.task('styles:dev', () => {
+    gulp.src(config.css)
+        .pipe(browserSync.stream());
 });
 
 gulp.task('inject:dev', () => {
@@ -57,7 +59,7 @@ gulp.task('scripts:build', ['clean:build'], () => {
     return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`])
         .pipe(sourcemaps.init())
         .pipe(concat('gaugeWidjet.js'))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(config.dist));
 });
@@ -89,15 +91,36 @@ gulp.task('build', ['inject:build']);
 gulp.task('serve:dev', ['inject:dev', 'watch:dev'], (cb) => {
     browserSync.init({
         server: {
-            port: 3005,
-            baseDir: './src'
+            port: 3000,
+            baseDir: './src',
+            middleware: [toDevServerProxy]
         }
     });
     cb();
 });
+
+
+gulp.task('serve:dev:api', ['serve:dev'], () => {
+    apiServer = nodemon({
+        script: 'dev-server.js',
+        watch: ['./'],
+        tasks: ['watch:dev', 'serve:dev']
+    });
+    // apiServer.on('start', function () {
+    //     browserSync.init({
+    //         server: {
+    //             port: 3005,
+    //             baseDir: './src',
+    //             middleware: [toDevServerProxy]
+    //         }
+    //     });
+    //     cb();
+    // });
+});
+
 gulp.task('watch:dev', () => {
     gulp.watch(config.js).on('change', browserSync.reload);
-    gulp.watch(config.css).on('change', browserSync.stream);
+    gulp.watch(config.css, ['styles:dev']);
 });
 
 process.on('exit', function () {
@@ -105,4 +128,4 @@ process.on('exit', function () {
     apiServer && apiServer.kill();
 });
 
-gulp.task('default', ['serve:dev']);
+gulp.task('default', ['serve:dev:api']);
