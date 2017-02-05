@@ -3,8 +3,9 @@
     var widget = (function () {
 
         function createChart() {
+            var store = Ext.data.StoreManager.lookup('DetailChartStore');
             var chart = Ext.create('Ext.chart.Chart', {
-                store: Ext.data.StoreManager.lookup('DetailChartStore'),
+                store: store,
                 // theme: 'LVRTheme',
                 hidden: true,
                 animate: true,
@@ -41,6 +42,10 @@
                 }
                 ]
             });
+            store.on('load', function() {
+                chart.show();
+            });
+
             return chart
         }
 
@@ -48,7 +53,7 @@
             var ratioGCont = Ext.create('RC.ui.RatioGaugeContainer', {                
                 store: Ext.data.StoreManager.lookup('ratioGaugeStore'),
                 onClick: function () {
-                    console.log(this.value); // temp
+                    console.log('Clicking the ratio',this); // temp
                 }
             });
             return ratioGCont;

@@ -120,14 +120,16 @@
                     var tpl = new Ext.XTemplate(bt.tpl);
                     bt.setText(tpl.apply(bt.data));
                 },
-                click: clickHandler
+                click: function() {
+                    var ratioGuage = this.ownerCt;
+                    clickHandler.apply(ratioGuage);
+                }
             }
         }];
     }
 
     function defineRatioGauge() {
         Ext.define(WIDGET_NAME, function (data) {
-            var store
             return {
                 extend: 'Ext.container.Container',
                 cls: 'gauge-button',
@@ -138,12 +140,10 @@
                     background: '#f7f7f7',
                     borderRadius: '3px'
                 },
-                columnWidth: '50%',
                 minHeight: 50,
-
                 constructor: function (config) {
-                    var report = config.store;
-                    var clickHandler = typeof config.onClick === 'function' ? config.onClick : function(){};
+                    var report = config.report;
+                    var clickHandler = typeof config.onClick === 'function' ? config.onClick : Repository.Local.Methods.noOp;
                     var state = getState(report);
                     this.style.borderColor = getChoiceFromState(state, '#ebccd1', '#d6e9c6', '#bce8f1');
                     config.items = itemsFactory(report, state, clickHandler);                    

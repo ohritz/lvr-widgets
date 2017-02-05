@@ -1,12 +1,12 @@
 (function (Ext) {
     var WIDGET_NAME = 'RC.ui.RatioGaugeContainer';
 
-    function itemsFactory(reports, clickhandler, container) {        
-        Ext.Array.each(reports, function (report) {
+    function itemsFactory(storeItems, container, clickHandler) {        
+        Ext.Array.each(storeItems, function (storeItem) {
             container.add(Ext.create('RC.ui.RatioGauge', {
                 columnWidth: 0.5,
-                store: report.getData(),
-                onClick: clickhandler
+                report: storeItem.getData(),
+                onClick: clickHandler
             }));
         });
     }
@@ -16,16 +16,14 @@
             var store
             return {
                 extend: 'Ext.container.Container',
-                defaultListenerScope: true,
 
                 constructor: function (config) {
                     var self = this;
                     var store = config.store;
-                    var clickHandler = typeof config.onClick === 'function' ? config.onClick : function () { };
+                    var onGaugeClick = typeof config.onClick === 'function' ? config.onClick : Repository.Local.Methods.noOp;
                     
                     store.on('load', function (record, operation) {
-                        itemsFactory(operation, clickHandler, self);
-                        self.doLayout();
+                        itemsFactory(operation, self, onGaugeClick);
                     });
                     config.layout = config.layout || {
                         type: 'column',
