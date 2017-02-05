@@ -22,8 +22,7 @@ config = {
 }
 
 var toDevServerProxy = proxy('/stratum', {
-    target: 'http://localhost:3005',
-    logLevel: 'debug'
+    target: 'http://localhost:3005'
 });
 
 gulp.task('styles:dev', () => {
@@ -64,8 +63,6 @@ gulp.task('scripts:build', ['clean:build'], () => {
         .pipe(gulp.dest(config.dist));
 });
 
-
-
 gulp.task('inject:build', ['scripts:build', 'styles:build'], () => {
     var sources = gulp.src([config.dist + '/**/*.css', config.dist + '**/*.js'], {
         read: false
@@ -88,34 +85,34 @@ gulp.task('serve:build', ['inject:build'], () => {
 
 gulp.task('build', ['inject:build']);
 
-gulp.task('serve:dev', ['inject:dev', 'watch:dev'], (cb) => {
-    browserSync.init({
-        server: {
-            port: 3000,
-            baseDir: './src',
-            middleware: [toDevServerProxy]
-        }
-    });
-    cb();
-});
+// gulp.task('serve:dev', ['inject:dev', 'watch:dev'], (cb) => {
+//     browserSync.init({
+//         server: {
+//             port: 3000,
+//             baseDir: './src',
+//             middleware: [toDevServerProxy]
+//         }
+//     });
+//     cb();
+// });
 
 
-gulp.task('serve:dev:api', ['serve:dev'], () => {
+gulp.task('serve:dev:api', ['inject:dev', 'watch:dev'], () => {
     apiServer = nodemon({
         script: 'dev-server.js',
         watch: ['./'],
-        tasks: ['watch:dev', 'serve:dev']
+        tasks: []
     });
-    // apiServer.on('start', function () {
-    //     browserSync.init({
-    //         server: {
-    //             port: 3005,
-    //             baseDir: './src',
-    //             middleware: [toDevServerProxy]
-    //         }
-    //     });
-    //     cb();
-    // });
+    apiServer.on('start', function () {
+        browserSync.init({
+            server: {
+                port: 3000,
+                baseDir: './src',
+                middleware: [toDevServerProxy]
+            }
+        });
+        cb();
+    });
 });
 
 gulp.task('watch:dev', () => {
@@ -125,7 +122,8 @@ gulp.task('watch:dev', () => {
 
 process.on('exit', function () {
     // In case the gulp process is closed (e.g. by pressing [CTRL + C]) stop both processes
-    apiServer && apiServer.kill();
+    //apiServer && apiServer.kill();
+    console.log(apiServer)
 });
 
 gulp.task('default', ['serve:dev:api']);
