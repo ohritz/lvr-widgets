@@ -100,8 +100,7 @@ gulp.task('build', ['inject:build']);
 gulp.task('serve:dev:api', ['inject:dev', 'watch:dev'], () => {
     apiServer = nodemon({
         script: 'dev-server.js',
-        watch: ['./'],
-        tasks: []
+        watch: ['./']
     });
     apiServer.on('start', function () {
         browserSync.init({
@@ -121,9 +120,7 @@ gulp.task('watch:dev', () => {
 });
 
 process.on('exit', function () {
-    // In case the gulp process is closed (e.g. by pressing [CTRL + C]) stop both processes
-    //apiServer && apiServer.kill();
-    console.log(apiServer)
+    // In case the gulp process is closed (e.g. by pressing [CTRL + C]) stop both processes    
 });
 
 gulp.task('default', ['serve:dev:api']);

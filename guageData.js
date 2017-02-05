@@ -23,7 +23,7 @@ function getDummyDataMulti(amount) {
     var ret = [];
     var len = amount || 6;
     for (var index = 0; index < len; index++) {
-        ret.push(getDummyData(index));
+        ret.push(getDummyData(index +204));
     }
     return ret;
 }

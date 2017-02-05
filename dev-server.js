@@ -21,6 +21,21 @@ app.get('/stratum/api/statistics/lvr/gaugeWidget', function(req,res) {
 
 });
 
+app.get('stratum/api/statistics/lvr/gaugeWidget/:id/details', function(req, res) {
+    var id = re.id;
+    res.status(200).send({
+      id: id,
+      data: [
+        {unit: 'one',
+      value: 2056},
+      {unit: 'two',
+      value: 3053},
+      {unit: 'three',
+      value: 1045}
+      ]
+    })
+});
+
 app.listen(port, function () {
     console.log(`listening on ${port}, for api calls.`);
 })
