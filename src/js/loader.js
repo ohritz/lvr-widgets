@@ -27,30 +27,31 @@
                     dock: 'bottom'
                 },
                 axes: [{
-                        type: 'numeric',
-                        position: 'left',
-                        minimum: 0,
-                        grid: true,
-                        dashSize: 0,
-                        renderer: Ext.util.Format.numberRenderer('0%')
-                    },
-                    {
-                        type: 'category',
-                        position: 'bottom',
-                        fields: ['unit']
-                    }
+                    type: 'numeric',
+                    position: 'left',
+                    minimum: 0,
+                    grid: true,
+                    dashSize: 0,
+                    renderer: Ext.util.Format.numberRenderer('0%')
+                },
+                {
+                    type: 'category',
+                    position: 'bottom',
+                    fields: ['unit']
+                }
                 ]
             });
             return chart
         }
 
         function createRatioGaugesContainer() {
-            var ratioGCont = Ext.create('RC.ui.RatioGuageContainer', {
+            var ratioGCont = Ext.create('RC.ui.RatioGaugeContainer', {                
                 store: Ext.data.StoreManager.lookup('ratioGaugeStore'),
-                onClick: function() {
+                onClick: function () {
                     console.log(this.value); // temp
                 }
-            })
+            });
+            return ratioGCont;
         }
 
         function populateRatioGaugeStore(cb) {
@@ -71,20 +72,19 @@
 
             //todo check if store is populated before calling populate..
             populateRatioGaugeStore(function () {
-                Ext.tip.QuickTipManager.init(true, {
-                    dismissDelay: 0
-                });
                 Ext.fly('mainContainer').unmask();
             });
+
             chart = createChart();
             ratioGauges = createRatioGaugesContainer();
 
+            Ext.tip.QuickTipManager.init(true, {
+                dismissDelay: 0
+            });
+
             Ext.create('Ext.container.Container', {
                 renderTo: 'mainContainer',
-                layout: {
-                    type: 'column',
-                    align: 'center'
-                },
+                layout: 'hbox',
                 items: [ratioGauges, chart]
             });
 
