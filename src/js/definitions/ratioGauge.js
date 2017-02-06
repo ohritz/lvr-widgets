@@ -118,7 +118,7 @@
                     getChoiceFromState(
                         state,
                         'Registrets mål på <b>' + report.limit +
-                            '%</b> är inte uppnått ännu',
+                            '%</b> är inte uppnått ännu', // todo: change message if inverted?
                         'Registrets mål på <b>' + report.limit +
                             '%</b> är uppnått!',
                         'Beskrivande indikator som saknar målvärde'
