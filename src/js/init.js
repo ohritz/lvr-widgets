@@ -1,12 +1,7 @@
-(function() {
-    var widget = function() {
-        function notiLoading() {
-            Ext.fly('mainContainer').mask('Laddar data ...');
-            return notiUnmask;
-        }
-
-        function notiUnmask() {
-            Ext.fly('mainContainer').unmask();
+(function () {
+    var widget = function () {
+        function toast(msg) {
+            Ext.toast(msg, '', 't');
         }
 
         function createChart() {
@@ -19,15 +14,22 @@
                 height: 400,
                 columnWidth: 1,
                 width: '100%',
-                insetPadding: {top: 55, right: 25, left: 25, bottom: 25},
+                insetPadding: {
+                    top: 55,
+                    right: 25,
+                    left: 25,
+                    bottom: 25
+                },
                 margin: 2,
-                style: {border: '1px solid #ddd', borderRadius: '3px'},
+                style: {
+                    border: '1px solid #ddd',
+                    borderRadius: '3px'
+                },
                 legend: {
                     // boxStrokeWidth: 0
                     dock: 'bottom'
                 },
-                axes: [
-                    {
+                axes: [{
                         type: 'numeric',
                         position: 'left',
                         minimum: 0,
@@ -35,7 +37,11 @@
                         dashSize: 0,
                         renderer: Ext.util.Format.numberRenderer('0%')
                     },
-                    {type: 'category', position: 'bottom', fields: ['unit']}
+                    {
+                        type: 'category',
+                        position: 'bottom',
+                        fields: ['unit']
+                    }
                 ]
             });
 
@@ -54,14 +60,14 @@
         function onGaugeClickFactory(chart) {
             var store = chart.getStore();
             return function loadChartAndShow() {
-                var unmask = notiLoading();
+                // toast('Laddar data...');
 
-                Repository.Local.Methods.getChartData(this.report.id, function(
+                Repository.Local.Methods.getChartData(this.report.id, function (
                     err,
                     payload
                 ) {
                     if (err) {
-                        // add notification of failure?
+                        toast("Kunde inte hämta data, var god försök igen senare.");
                         return Ext.log(err);
                     }
                     Repository.Local.Methods.loadMainChart(
@@ -69,21 +75,25 @@
                         chart,
                         payload.data
                     );
-                    unmask();
                 });
             };
         }
 
         function populateRatioGaugeStore(cb) {
             var store = Ext.data.StoreManager.lookup('ratioGaugeStore');
-            store.load({
-                params: {},
-                callback: function(records, operation, success) {
-                    if (success)
-                        cb();
-                    // Add notification on failure?
-                }
-            });
+            if (!store.isLoaded() && !store.isLoading()) {
+                store.load({
+                    params: {},
+                    callback: function (records, operation, success) {
+                        if (success) {
+                            return cb();
+                        } else {
+                            toast('Kunde inte hämta data, var god försök igen.');
+                        }
+
+                    }
+                });
+            }
         }
 
         function init() {
@@ -94,26 +104,32 @@
                 onGaugeClickFactory(chart)
             );
 
-            Ext.tip.QuickTipManager.init(true, {dismissDelay: 0});
+            Ext.tip.QuickTipManager.init(true, {
+                dismissDelay: 0
+            });
 
             Ext.create('Ext.container.Container', {
                 renderTo: 'mainContainer',
-                layout: {type: 'column', align: 'center'},
+                layout: {
+                    type: 'column',
+                    align: 'center'
+                },
                 items: [ratioGauges, chart]
             });
 
-            //todo check if store is populated before calling populate..
-            populateRatioGaugeStore(function() {
-                notiUnmask();
+            populateRatioGaugeStore(function () {
+                Ext.fly('mainContainer').unmask();
             });
         }
-        return {init: init, loading: notiLoading};
+        return {
+            init: init
+        };
     }();
 
     Ext.application({
         name: 'LVR-ratioGauges',
-        launch: function() {
-            widget.loading();
+        launch: function () {
+            Ext.fly('mainContainer').mask('Laddar data ...');
             widget.init();
         }
     });

@@ -14,7 +14,9 @@
                         var data = Ext.decode(res.responseText);
                         callback(null, data);
                     },
-                    failure: function(err) {
+                    failure: function(res) {
+                        var err = new Error(res.statusText + ": " + res.responseText);
+                        err.status = res.status;
                         callback(err);
                     }
                 });
