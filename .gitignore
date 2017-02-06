@@ -6,3 +6,4 @@ npm-debug.log
 debug.log
 .sencha
 .tmp
+/src/js/styles.js
