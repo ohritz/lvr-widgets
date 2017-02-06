@@ -19,12 +19,15 @@ app.get('/stratum/api/statistics/lvr/gaugeWidget', function (req, res) {
   console.log('stop hitting me');
   var id = req.query.id,
     data;
-    console.log('id is: ',id);
-  if (typeof id === 'undefined')
+
+  if (typeof id === 'undefined') {
     data = guageData.getDataFromJson();
-  else
+  } else {
     data = chartData(id);
-  res.status(200).send(data);
+    console.log('id is: ', id);
+    // res.status(500).send('nope');
+  }
+  res.status(200).send(data);  
 
 });
 

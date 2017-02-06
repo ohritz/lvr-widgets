@@ -57,7 +57,7 @@ gulp.task('inject:dev', ['scripts:dev', 'styles:dev'], () => {
 });
 
 gulp.task('clean:build', () => {
-    return del([config.dist + '/*', config.src + '/js/styles.js'])
+    return del([config.dist + '/*', config.tmp + '/js/styles.js'])
         .then(paths => console.log('Deleting:\n', paths.join('\n')));
 });
 
@@ -71,12 +71,12 @@ gulp.task('styles:build', ['clean:build'], () => {
             suffix: '");',
             splitOnNewline: false,
         }))
-        .pipe(gulp.dest(config.src + '/js/'));
+        .pipe(gulp.dest(config.tmp + '/js/'));
 });
 
 gulp.task('scripts:build', ['clean:build', 'styles:build'], () => {
-    return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`])
-        .pipe(sourcemaps.init())
+    return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`, `${config.tmp}/js/styles.js`])
+        // .pipe(sourcemaps.init())
         .pipe(order([
             'definitions/*.js',
             'utils/*.js',
@@ -85,7 +85,7 @@ gulp.task('scripts:build', ['clean:build', 'styles:build'], () => {
         ]))
         .pipe(concat('gaugeWidjet.js'))
         // .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
+        // .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(config.dist + '/js/'));
 });
 
