@@ -3,15 +3,15 @@
     var widget = (function () {
 
         function createChart() {
-            var store = Ext.data.StoreManager.lookup('DetailChartStore');
             var chart = Ext.create('Ext.chart.Chart', {
-                store: store,
+                store: Ext.data.StoreManager.lookup('DetailChartStore'),
                 // theme: 'LVRTheme',
                 hidden: true,
                 animate: true,
                 shadow: false,
-                columnWidth: 1,
                 height: 400,
+                columnWidth: 1,
+                width: '100%',
                 insetPadding: {
                     top: 55,
                     right: 25,
@@ -28,35 +28,52 @@
                     dock: 'bottom'
                 },
                 axes: [{
-                    type: 'numeric',
-                    position: 'left',
-                    minimum: 0,
-                    grid: true,
-                    dashSize: 0,
-                    renderer: Ext.util.Format.numberRenderer('0%')
-                },
-                {
-                    type: 'category',
-                    position: 'bottom',
-                    fields: ['unit']
-                }
+                        type: 'numeric',
+                        position: 'left',
+                        minimum: 0,
+                        grid: true,
+                        dashSize: 0,
+                        renderer: Ext.util.Format.numberRenderer('0%')
+                    },
+                    {
+                        type: 'category',
+                        position: 'bottom',
+                        fields: ['unit']
+                    }
                 ]
-            });
-            store.on('load', function() {
-                chart.show();
             });
 
             return chart
         }
 
-        function createRatioGaugesContainer() {
-            var ratioGCont = Ext.create('RC.ui.RatioGaugeContainer', {                
+        function createRatioGaugesContainer(onClick) {
+            var ratioGCont = Ext.create('RC.ui.RatioGaugeContainer', {
+                columnWidth: 1,
                 store: Ext.data.StoreManager.lookup('ratioGaugeStore'),
-                onClick: function () {
-                    console.log('Clicking the ratio',this); // temp
-                }
+                onClick: onClick
             });
             return ratioGCont;
+        }
+
+        function onGaugeClickFactory(chart) {
+            var store = chart.getStore();
+            return function loadChartAndShow() {
+                console.log('clicking', this.report);
+                Repository.Local.Methods.getChartData(this.report.id, function (err, payload) {
+                    if (err) {
+                        // add notification of failure?
+                        return Ext.log(err);
+                    }
+                    console.log(payload);
+                    store.loadData(payload.data);
+                    if (chart.hidden)
+                        chart.show();
+
+                    // chart.ownerCt.doLayout();
+                    // chart.redraw();
+                });
+
+            }
         }
 
         function populateRatioGaugeStore(cb) {
@@ -66,6 +83,7 @@
                 callback: function (records, operation, success) {
                     if (success)
                         cb();
+                    // Add notification on failure?
                 }
             });
         }
@@ -73,15 +91,8 @@
         function init() {
             var chart, ratioGauges;
 
-            Ext.fly('mainContainer').mask('Laddar data ...');
-
-            //todo check if store is populated before calling populate..
-            populateRatioGaugeStore(function () {
-                Ext.fly('mainContainer').unmask();
-            });
-
             chart = createChart();
-            ratioGauges = createRatioGaugesContainer();
+            ratioGauges = createRatioGaugesContainer(onGaugeClickFactory(chart));
 
             Ext.tip.QuickTipManager.init(true, {
                 dismissDelay: 0
@@ -89,8 +100,16 @@
 
             Ext.create('Ext.container.Container', {
                 renderTo: 'mainContainer',
-                layout: 'hbox',
+                layout: {
+                    type: 'column',
+                    align: 'center'
+                },
                 items: [ratioGauges, chart]
+            });
+
+            //todo check if store is populated before calling populate..
+            populateRatioGaugeStore(function () {
+                Ext.fly('mainContainer').unmask();
             });
 
         }
@@ -104,6 +123,7 @@
     Ext.application({
         name: 'LVR-ratioGauges',
         launch: function () {
+            Ext.fly('mainContainer').mask('Laddar data ...');
             widget.init();
         }
     })
