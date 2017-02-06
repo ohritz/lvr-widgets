@@ -3,7 +3,7 @@
     "3087": {
       "indicator": "Spirometri",
       "descName": "med utf\u00f6rd <b>spirometri<\/b>",
-      "desc": "Andel KOL-patienter med registrerad spirometri",
+      "description": "Andel KOL-patienter med registrerad spirometri",
       "sums": {
         "ClinicALL=0": 41,
         "ClinicALL=1": 25521
@@ -16,14 +16,13 @@
       "ClinicALL=1": {
         "Ej spirometri": 11130,
         "Spirometri": 14391
-      },
-      "id": "extModel339-1"
+      }
     },
     "3090": {
       "indicator": "R\u00f6ker",
       "descName": "som <b>r\u00f6ker<\/b>",
-      "desc": "KOL-Patienters R\u00f6kvanor",
-      "upperLimit": 0,
+      "description": "KOL-Patienters R\u00f6kvanor",
+      "limit": 0,
       "invert": true,
       "colors": [
         "#4F6228",
@@ -45,15 +44,13 @@
         "Aldrig varit r\u00f6kare": 3199,
         "Slutat r\u00f6ka": 8743,
         "R\u00f6ker": 8031
-      },
-      "id": "extModel341-1"
+      }
     },
     "3091": {
       "indicator": "Vaccinerad",
       "descName": "<b>vaccinerade<\/b> f\u00f6r influensa",
-      "desc": "Andel KOL-patienter med influensavaccinationsskydd ",
-      "upperLimit": 80,
-      "lowerLimit": 80,
+      "description": "Andel KOL-patienter med influensavaccinationsskydd ",
+      "limit": 80,
       "colors": [
         "#C0504D",
         "#9BBB59"
@@ -72,14 +69,13 @@
         "Ok\u00e4nt": 16022,
         "Ej vaccinerad": 2963,
         "Vaccinerad": 6536
-      },
-      "id": "extModel343-1"
+      }
     },
     "3092": {
       "indicator": "0 dagar",
       "descName": "<b>fysisk akt. 0 dagar<\/b> i veckan",
-      "desc": "F\u00f6rdelning av Grad av fysisk aktivitet bland KOL-patienter",
-      "upperLimit": 0,
+      "description": "F\u00f6rdelning av Grad av fysisk aktivitet bland KOL-patienter",
+      "limit": 0,
       "invert": true,
       "colors": [
         "#C0504D",
@@ -105,15 +101,13 @@
         "1-2 dagar": 2451,
         "3-4 dagar": 2084,
         "5-7 dagar": 5856
-      },
-      "id": "extModel345-1"
+      }
     },
     "3093": {
       "indicator": "Erh\u00e5llit utbildning",
       "descName": "som erh\u00e5llit <b>utbildning<\/b>",
-      "desc": "Andel KOL-patienter som n\u00e5gon g\u00e5ng erh\u00e5llit Patientutbildning",
-      "upperLimit": 80,
-      "lowerLimit": 40,
+      "description": "Andel KOL-patienter som n\u00e5gon g\u00e5ng erh\u00e5llit Patientutbildning",
+      "limit": 80,
       "colors": [
         "#C0504D",
         "#9BBB59"
@@ -132,14 +126,13 @@
         "Ok\u00e4nt": 15600,
         "Ej erh\u00e5llit utbildning": 2847,
         "Erh\u00e5llit utbildning": 7074
-      },
-      "id": "extModel347-1"
+      }
     },
     "3094": {
       "indicator": ">=2",
       "descName": "f\u00e5r <b>&gt;=2 exacerbationer<\/b> per \u00e5r",
-      "desc": "F\u00f6rdelning av antal exacerbationer per \u00e5r bland KOL-patienter",
-      "upperLimit": 0,
+      "description": "F\u00f6rdelning av antal exacerbationer per \u00e5r bland KOL-patienter",
+      "limit": 0,
       "invert": true,
       "colors": [
         "#9BBB59",
@@ -159,13 +152,12 @@
         "Ok\u00e4nt": 15271,
         "0-1": 8850,
         ">=2": 1400
-      },
-      "id": "extModel349-1"
+      }
     },
     "3095": {
       "indicator": "Registrerade",
       "descName": "Registreringsandel",
-      "desc": "Andel KOL-patienter med n\u00e5gon registrering",
+      "description": "Andel KOL-patienter med n\u00e5gon registrering",
       "hidden": true,
       "sums": {
         "ClinicALL=0": 133,
@@ -179,14 +171,13 @@
       "ClinicALL=1": {
         "Ej registrerade": 9247,
         "Registrerade": 25521
-      },
-      "id": "extModel294-1"
+      }
     },
     "3120": {
       "indicator": ">30",
       "descName": "har <b>CAT &gt;30<\/b>",
-      "desc": "CAT",
-      "upperLimit": 0,
+      "description": "CAT",
+      "limit": 0,
       "invert": true,
       "colors": [
         "#4F6228",
@@ -212,8 +203,7 @@
         "10-20": 6609,
         "21-30": 2244,
         ">30": 245
-      },
-      "id": "extModel351-1"
+      }
     }
   }
 }

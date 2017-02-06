@@ -1,3 +1,5 @@
+const data = require('./lvr-data.json');
+
 function round(number, precision) {
     var factor = Math.pow(10, precision);
     var tempNumber = number * factor;
@@ -28,4 +30,26 @@ function getDummyDataMulti(amount) {
     return ret;
 }
 
-module.exports = getDummyDataMulti;
+function getDataFromJson() {
+    var indicators = data.overviewKOL;
+    var ids = Object.keys(indicators);
+    return ids.map(id => {
+        var indicator = Object.assign({},indicators[id]);
+        indicator.id = id;
+        return indicator;
+    })
+    .map(indicator => {
+        with(indicator) {
+            delete indicator;
+            delete sums;
+        }
+        delete indicator['ClinicALL=0']
+        delete indicator['ClinicALL=1']
+        return indicator;
+    });
+}
+
+module.exports = {
+    getDataFromJson,
+    getDummyDataMulti
+};

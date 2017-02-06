@@ -21,7 +21,7 @@ app.get('/stratum/api/statistics/lvr/gaugeWidget', function (req, res) {
     data;
     console.log('id is: ',id);
   if (typeof id === 'undefined')
-    data = guageData(6);
+    data = guageData.getDataFromJson();
   else
     data = chartData(id);
   res.status(200).send(data);

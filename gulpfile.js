@@ -17,6 +17,7 @@ config = {
     js: './src/js/**/*.js',
     css: './src/css/**/*.css',
     html: './src/**/*.html',
+    devServer: './devServer',
     src: './src',
     dist: './dist'
 }
@@ -97,10 +98,10 @@ gulp.task('build', ['inject:build']);
 // });
 
 
-gulp.task('serve:dev:api', ['inject:dev', 'watch:dev'], () => {
+gulp.task('serve:dev:api', ['inject:dev'], () => {
     apiServer = nodemon({
-        script: 'dev-server.js',
-        watch: ['./']
+        script: './devServer/dev-server.js',
+        tasks: ['watch:dev']
     });
     apiServer.on('start', function () {
         browserSync.init({
@@ -117,6 +118,7 @@ gulp.task('serve:dev:api', ['inject:dev', 'watch:dev'], () => {
 gulp.task('watch:dev', () => {
     gulp.watch(config.js).on('change', browserSync.reload);
     gulp.watch(config.css, ['styles:dev']);
+    gulp.watch(config.devServer + '/*', apiServer.reload);
 });
 
 process.on('exit', function () {
