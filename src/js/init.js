@@ -1,6 +1,6 @@
 (function () {
 
-    var widget = (function () {
+    var widget = (function () {      
 
         function createChart() {
             var chart = Ext.create('Ext.chart.Chart', {
@@ -57,20 +57,14 @@
 
         function onGaugeClickFactory(chart) {
             var store = chart.getStore();
-            return function loadChartAndShow() {
-                console.log('clicking', this.report);
+            return function loadChartAndShow() {                
                 Repository.Local.Methods.getChartData(this.report.id, function (err, payload) {
                     if (err) {
                         // add notification of failure?
                         return Ext.log(err);
                     }
-                    console.log(payload);
-                    store.loadData(payload.data);
-                    if (chart.hidden)
-                        chart.show();
+                    Repository.Local.Methods.loadMainChart(payload.id, chart, payload.data);
 
-                    // chart.ownerCt.doLayout();
-                    // chart.redraw();
                 });
 
             }
@@ -110,6 +104,7 @@
             //todo check if store is populated before calling populate..
             populateRatioGaugeStore(function () {
                 Ext.fly('mainContainer').unmask();
+                
             });
 
         }

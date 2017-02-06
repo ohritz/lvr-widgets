@@ -3,6 +3,7 @@ const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync').create();
 const inject = require('gulp-inject');
 const concat = require('gulp-concat');
+const css2js = require('gulp-css2js');
 const uglify = require('gulp-uglify');
 const es = require('event-stream');
 const order = require('gulp-order');
@@ -18,6 +19,7 @@ config = {
     css: './src/css/**/*.css',
     html: './src/**/*.html',
     devServer: './devServer',
+    tmp: './.tmp',
     src: './src',
     dist: './dist'
 }
@@ -27,23 +29,35 @@ var toDevServerProxy = proxy('/stratum', {
 });
 
 gulp.task('styles:dev', () => {
-    gulp.src(config.css)
-        .pipe(browserSync.stream());
+    return gulp.src(config.css)
+        .pipe(browserSync.stream())
+        .pipe(gulp.dest(config.tmp + '/css/'));
 });
 
-gulp.task('inject:dev', () => {
-    var sources = gulp.src([config.css, config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`], {
+gulp.task('scripts:dev', () => {
+    return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`, `!${config.src}/js/styles.js`])        
+        .pipe(gulp.dest(config.tmp + '/js/'));        
+});
+
+gulp.task('scripts-reload:dev', ['scripts:dev'], (done)=> {
+    browserSync.reload();
+    done();
+});
+
+gulp.task('inject:dev', ['scripts:dev', 'styles:dev'], () => {
+    var sources = gulp.src([`${config.tmp}/**/*`], {
         read: false
     });
     return gulp.src(config.src + '/index.html')
         .pipe(inject(sources, {
-            relative: true
+            relative: false,
+            ignorePath: ['.tmp']
         }))
-        .pipe(gulp.dest(config.src));
+        .pipe(gulp.dest(config.tmp + '/'));
 });
 
 gulp.task('clean:build', () => {
-    return del([config.dist + '/*'])
+    return del([config.dist + '/*', config.src + '/js/styles.js'])
         .then(paths => console.log('Deleting:\n', paths.join('\n')));
 });
 
@@ -52,62 +66,69 @@ gulp.task('styles:build', ['clean:build'], () => {
         .pipe(cleancss({
             compatibility: 'ie8'
         }))
-        .pipe(gulp.dest(config.dist));
+        .pipe(css2js({
+            prefix: 'Ext.util.CSS.createStyleSheet("',
+            suffix: '");',
+            splitOnNewline: false,
+        }))
+        .pipe(gulp.dest(config.src + '/js/'));
 });
 
-gulp.task('scripts:build', ['clean:build'], () => {
+gulp.task('scripts:build', ['clean:build', 'styles:build'], () => {
     return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`])
         .pipe(sourcemaps.init())
+        .pipe(order([
+            'definitions/*.js',
+            'utils/*.js',
+            'styles.js',
+            'init.js'
+        ]))
         .pipe(concat('gaugeWidjet.js'))
         // .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(config.dist));
+        .pipe(gulp.dest(config.dist + '/js/'));
 });
 
-gulp.task('inject:build', ['scripts:build', 'styles:build'], () => {
-    var sources = gulp.src([config.dist + '/**/*.css', config.dist + '**/*.js'], {
+gulp.task('inject:build', ['scripts:build'], () => {
+    var sources = gulp.src([config.dist + '/js/*.js'], {
         read: false
     });
     return gulp.src('./src/index.html')
         .pipe(inject(sources, {
-            relative: true
+            relative: false,
+            ignorePath: ['dist']
         }))
         .pipe(gulp.dest(config.dist));
 });
 
 gulp.task('serve:build', ['inject:build'], () => {
-    browserSync.init({
-        server: {
-            port: 3005,
-            baseDir: './dist'
-        }
-    })
-});
-
-gulp.task('build', ['inject:build']);
-
-// gulp.task('serve:dev', ['inject:dev', 'watch:dev'], (cb) => {
-//     browserSync.init({
-//         server: {
-//             port: 3000,
-//             baseDir: './src',
-//             middleware: [toDevServerProxy]
-//         }
-//     });
-//     cb();
-// });
-
-
-gulp.task('serve:dev:api', ['inject:dev'], () => {
     apiServer = nodemon({
-        script: './devServer/dev-server.js',
-        tasks: ['watch:dev']
+        script: './devServer/dev-server.js'
     });
     apiServer.on('start', function () {
         browserSync.init({
             server: {
                 port: 3000,
-                baseDir: './src',
+                baseDir: './dist',
+                middleware: [toDevServerProxy]
+            }
+        });
+    });
+});
+
+gulp.task('build', ['inject:build']);
+
+
+gulp.task('serve:dev:api', ['inject:dev','watch:dev'], () => {
+    apiServer = nodemon({
+        script: './devServer/dev-server.js',
+        tasks: ['scripts-reload:dev']
+    });
+    apiServer.on('start', function () {
+        browserSync.init({
+            server: {
+                port: 3000,
+                baseDir: config.tmp,
                 middleware: [toDevServerProxy]
             }
         });
@@ -115,10 +136,9 @@ gulp.task('serve:dev:api', ['inject:dev'], () => {
     });
 });
 
-gulp.task('watch:dev', () => {
-    gulp.watch(config.js).on('change', browserSync.reload);
+gulp.task('watch:dev', () => {    
+    gulp.watch(config.js, ['scripts-reload:dev']);
     gulp.watch(config.css, ['styles:dev']);
-    gulp.watch(config.devServer + '/*', apiServer.reload);
 });
 
 process.on('exit', function () {

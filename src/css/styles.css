@@ -11,7 +11,7 @@
 }
 
 .gauge-btn .value-text {
-    width: 44px;
+    width: 60px;
     text-align: right;       
     font-size: 24px;
     line-height: 24px;
@@ -21,7 +21,7 @@
 
 .gauge-btn .gauge-desc {
     width: 70%;  /* fallback % for IE8 */
-    width: calc(100% - 87px);
+    width: calc(100% - 107px);
     float: left;
     overflow: hidden;
     white-space: normal;
