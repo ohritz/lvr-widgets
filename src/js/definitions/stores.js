@@ -28,7 +28,7 @@
         proxy: {
             type: 'ajax',
             url: '/stratum/api/statistics/lvr/gaugeWidget',
-            reader: {type: 'json', rootProperty: 'data'},
+            reader: {type: 'json', rootProperty: 'd'},
             noCache: false,
             pageParam: '',
             startParam: '',

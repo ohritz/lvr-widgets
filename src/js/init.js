@@ -5,7 +5,7 @@
         }
 
         function createChart() {
-            var chart = Ext.create('Ext.chart.Chart', {
+            return Ext.create('Ext.chart.Chart', {
                 store: Ext.data.StoreManager.lookup('DetailChartStore'),
                 // theme: 'LVRTheme',
                 hidden: true,
@@ -44,38 +44,38 @@
                     }
                 ]
             });
-
-            return chart;
         }
 
         function createRatioGaugesContainer(onClick) {
-            var ratioGCont = Ext.create('RC.ui.RatioGaugeContainer', {
+            return Ext.create('RC.ui.RatioGaugeContainer', {
                 columnWidth: 1,
                 store: Ext.data.StoreManager.lookup('ratioGaugeStore'),
                 onClick: onClick
             });
-            return ratioGCont;
         }
 
         function onGaugeClickFactory(chart) {
             var store = chart.getStore();
             return function loadChartAndShow() {
-                // toast('Laddar data...');
-
-                Repository.Local.Methods.getChartData(this.report.id, function (
-                    err,
-                    payload
-                ) {
-                    if (err) {
-                        toast("Kunde inte hämta data, var god försök igen senare.");
-                        return Ext.log(err);
-                    }
-                    Repository.Local.Methods.loadMainChart(
-                        payload.id,
-                        chart,
-                        payload.data
-                    );
-                });
+                // this function is called from within the ratioGauge listener::click.
+                // so this is the ratioGauge
+                var id = this.report.id;
+                if (typeof id !== 'undefined') {
+                    Repository.Local.Methods.getChartData(this.report.id, function (
+                        err,
+                        payload
+                    ) {
+                        if (err) {
+                            toast("Kunde inte hämta data, var god försök igen senare.");
+                            return Ext.log(err);
+                        }
+                        Repository.Local.Methods.loadMainChart(
+                            payload.d.id,
+                            chart,
+                            payload.d.data
+                        );
+                    });
+                }
             };
         }
 

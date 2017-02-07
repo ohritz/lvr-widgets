@@ -27,7 +27,9 @@ app.get('/stratum/api/statistics/lvr/gaugeWidget', function (req, res) {
     console.log('id is: ', id);
     // res.status(500).send('nope');
   }
-  res.status(200).send(data);  
+  setTimeout(function () {
+    res.status(200).send({d:data});
+  }, 120);
 
 });
 
