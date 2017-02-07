@@ -1,4 +1,4 @@
-const data = require('./lvr-data.json');
+const data = require('./lvr-data-v2.json');
 
 function round(number, precision) {
     var factor = Math.pow(10, precision);

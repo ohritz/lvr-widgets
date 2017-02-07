@@ -1,4 +1,4 @@
-const data = require('./lvr-data.json');
+const data = require('./lvr-data-v2.json');
 
 module.exports = function (id) {
 

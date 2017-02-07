@@ -1,0 +1,199 @@
+{
+  "overviewKOL": {
+    "3087": {
+      "indicator": "Spirometri",
+      "tooltip": "Andel patienter där man utfört spirometri senaste 15 månaderna (hög andel eftersträvas)",
+      "description": "Fördelning avseende spirometri",
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },      
+      "answerRatio": {
+        "ClinicALL=0": 100,
+        "ClinicALL=1": 100
+      },
+      "ClinicALL=0": {
+        "Utförd spirometri": 41,
+        "Ej spirometri": 0        
+      },
+      "value": 100,
+      "ClinicALL=1": {
+        "Utförd spirometri": 14391,
+        "Ej spirometri": 11130        
+      }
+    },
+    "3090": {
+      "indicator": "Andel Rökare",
+      "tooltip": "Andel patienter som definieras som rökare (inkluderar aktiva rökare samt de som varit rökfria < 6 månader) (låg andel eftersträvas)",
+      "description": "Fördelning avseende patientens rökvanor",
+      "colors": [
+        "#4F6228",
+        "#9BBB59",
+        "#C0504D"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },
+      "answerRatio": {
+        "ClinicALL=0": 100,
+        "ClinicALL=1": 78
+      },
+      "ClinicALL=0": {
+        "Aldrig varit r\u00f6kare": 4,
+        "Slutat r\u00f6ka": 25,
+        "R\u00f6ker": 12
+      },
+      "value": 29.268292682927,
+      "ClinicALL=1": {
+        "Aldrig varit r\u00f6kare": 3199,
+        "Slutat r\u00f6ka": 8743,
+        "R\u00f6ker": 8031
+      }
+    },
+    "3091": {
+      "indicator": "Vaccinerad",
+      "tooltip": "Andel patienter som vaccinerats för influensa (registrets mål > 80 %)",
+      "description": "Fördelning avseende influensavaccinering",
+      "limit": 80,
+      "colors": [
+        "#C0504D",
+        "#9BBB59"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },
+      "answerRatio": {
+        "ClinicALL=0": 97.5,
+        "ClinicALL=1": 37.2
+      },
+      "ClinicALL=0": {
+        "Ej vaccinerad": 14,
+        "Vaccinerad": 26
+      },
+      "value": 63.414634146341,
+      "ClinicALL=1": {
+        "Ej vaccinerad": 2963,
+        "Vaccinerad": 6536
+      }
+    },
+    "3092": {
+      "indicator": "0 dagar",
+      "tooltip": "Andel patienter som är fysiskt aktiva 5-7 dagar i veckan minst 30 minuter per dag (hög andel eftersträvas)",
+      "description": "Fördelning avseende fysisk aktivitet",      
+      "colors": [
+        "#C0504D",
+        "#F79646",
+        "#9BBB59",
+        "#4F6228"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },      
+      "answerRatio": {
+        "ClinicALL=0": 88,
+        "ClinicALL=1": 55.6
+      },
+      "ClinicALL=0": {
+        "0 dagar": 13,
+        "1-2 dagar": 4,
+        "3-4 dagar": 7,
+        "5-7 dagar": 12
+      },
+      "value": 31.707317073171,
+      "ClinicALL=1": {
+        "0 dagar": 3807,
+        "1-2 dagar": 2451,
+        "3-4 dagar": 2084,
+        "5-7 dagar": 5856
+      }
+    },
+    "3093": {
+      "indicator": "Erh\u00e5llit utbildning",
+      "tooltip": "Andel patienter som vaccinerats för influensa (registrets mål > 80 %)",
+      "description": "Fördelning avseende influensavaccinering",
+      "limit": 80,
+      "colors": [
+        "#C0504D",
+        "#9BBB59"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },
+      "ClinicALL=0": {
+        "Ok\u00e4nt": 1,
+        "Ej erh\u00e5llit utbildning": 39,
+        "Erh\u00e5llit utbildning": 1
+      },
+      "value": 2.4390243902439,
+      "ClinicALL=1": {
+        "Ok\u00e4nt": 15600,
+        "Ej erh\u00e5llit utbildning": 2847,
+        "Erh\u00e5llit utbildning": 7074
+      }
+    },
+    "3094": {
+      "indicator": ">=2",
+      "tooltip": "Andel patienter med ≥ 2 försämringsepisoder senaste 12 månaderna (låg andel eftersträvas)",
+      "description": "Fördelning avseende antalet exacerbationer senaste 12 månaderna",
+      "limit": 0,
+      "invert": true,
+      "colors": [
+        "#9BBB59",
+        "#C0504D"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25521
+      },
+      "answerRatio": {
+        "ClinicALL=0": 97.5,
+        "ClinicALL=1": 40.1
+      },
+      "ClinicALL=0": {
+        "0-1": 32,
+        ">=2": 8
+      },
+      "value": 19.512195121951,
+      "ClinicALL=1": {
+        "0-1": 8850,
+        ">=2": 1400
+      }
+    },
+    "3120": {
+      "indicator": ">30",
+      "tooltip": "Andel patienter som är välreglerade avseende hälsostatus med CAT-värde <10 (hög andel eftersträvas) ",
+      "description": "Fördelning avseende resultat på CAT-skalan  ",
+      "colors": [
+        "#4F6228",
+        "#9BBB59",
+        "#F79646",
+        "#C0504D"
+      ],
+      "sums": {
+        "ClinicALL=0": 41,
+        "ClinicALL=1": 25511
+      },
+      "answerRatio": {
+        "ClinicALL=0": 85.3,
+        "ClinicALL=1": 47.2
+      },
+      "ClinicALL=0": {
+        "<10": 5,
+        "10-20": 21,
+        "21-30": 8,
+        ">30": 1
+      },
+      "value": 2.4390243902439,
+      "ClinicALL=1": {
+        "<10": 2940,
+        "10-20": 6609,
+        "21-30": 2244,
+        ">30": 245
+      }
+    }
+  }
+}
