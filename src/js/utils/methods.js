@@ -62,7 +62,13 @@
                     nullPos;
                 chart.show();
                 // chart.hidden = false;
+                
+                // devNote: the following logic is calculation a percentage from the value / sums
+                // as I undertstand, the sums include the non answers, and that is not desirable any more..
+                // data point should be value / sum of all values that are not unknown.
+
                 Ext.Object.each(gaugeData[regProp], function(key, value) {
+                    debugger;
                     dataFields.push('andel' + i);
                     dataFields.push('antal' + i);
                     graphFields.push('andel' + i);
@@ -87,7 +93,7 @@
                         axis.fields = graphFields;
                     }
                     if (axis.position === 'top') {
-                        axis.title = gaugeData.desc;
+                        axis.title = gaugeData.description;
                     }
                 });
                 nullPos = Ext.Array.indexOf(titles, 'Okänt');
@@ -127,7 +133,7 @@
                                         )
                                     )
                                 );
-                            }
+                            }                            
                         }
                     },
                     colors: Ext.Array.insert(
@@ -138,7 +144,7 @@
                 });
                 chart.setSprites({
                     type: 'text',
-                    text: gaugeData.desc,
+                    text: gaugeData.description,
                     textAlign: 'middle',
                     fontSize: 20,
                     width: chart.getWidth(),
