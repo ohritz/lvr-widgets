@@ -1,4 +1,4 @@
-(function(Ext) {
+(function (Ext) {
     var WIDGET_NAME = 'RC.ui.RatioGauge';
     var HEATGUAGE_NAME = 'RC.ui.HeateGuage';
 
@@ -6,12 +6,12 @@
         Ext.define(HEATGUAGE_NAME, {
             extend: 'Ext.chart.PolarChart',
             alias: 'widget.heatgauge',
-            constructor: function(config) {
+            constructor: function (config) {
                 if (config && config.valueField) {
                     var renderer;
                     if (config.limitField) {
                         renderer = {
-                            renderer: function(
+                            renderer: function (
                                 sprite,
                                 record,
                                 attribute,
@@ -19,7 +19,7 @@
                             ) {
                                 if (
                                     index !== 0 ||
-                                        !record.get(config.limitField)
+                                    !record.get(config.limitField)
                                 ) {
                                     return attribute;
                                 }
@@ -47,6 +47,7 @@
             insetPadding: 0
         });
     }
+
     function getChoiceFromState(state, danger, success, standard) {
         switch (state) {
             case 'danger':
@@ -59,15 +60,16 @@
     }
 
     function getState(report) {
-        return Ext.isDefined(report.limit)
-            ? (report.value > report.limit ? !report.invert : report.invert)
-                ? 'success'
-                : 'danger'
-            : '';
+        if (typeof report.limit === 'number')
+            return 'default';
+
+        return (report.invert ? report.value < report.limit : report.value > report.limit) ?
+            'success' :
+            'danger';
     }
+
     function itemsFactory(report, state, clickHandler) {
-        return [
-            {
+        return [{
                 xtype: 'heatgauge',
                 valueField: 'value',
                 style: {},
@@ -95,9 +97,9 @@
                 cls: 'gauge-btn gauge-btn' +
                     getChoiceFromState(state, '-danger', '-success', '-info'),
                 style: {
-                    background: state === 'danger'
-                        ? '#f2dede'
-                        : state === 'success' ? '#dff0d8' : '#d9edf7',
+                    background: state === 'danger' ?
+                        '#f2dede' :
+                        state === 'success' ? '#dff0d8' : '#d9edf7',
                     borderLeft: '1px solid #ccc',
                     color: getChoiceFromState(
                         state,
@@ -118,9 +120,9 @@
                     getChoiceFromState(
                         state,
                         'Registrets mål på <b>' + report.limit +
-                            '%</b> är inte uppnått ännu', // todo: change message if inverted?
+                        '%</b> är inte uppnått ännu', // todo: change message if inverted?
                         'Registrets mål på <b>' + report.limit +
-                            '%</b> är uppnått!',
+                        '%</b> är uppnått!',
                         'Beskrivande indikator som saknar målvärde'
                     ) +
                     '</div><i>Klicka för komplett fördelning</i>',
@@ -133,11 +135,11 @@
                     '</div>' +
                     '</div>',
                 listeners: {
-                    beforerender: function(bt) {
+                    beforerender: function (bt) {
                         var tpl = new Ext.XTemplate(bt.tpl);
                         bt.setText(tpl.apply(bt.data));
                     },
-                    click: function() {
+                    click: function () {
                         var ratioGuage = this.ownerCt;
                         clickHandler.apply(ratioGuage);
                     }
@@ -145,8 +147,9 @@
             }
         ];
     }
+
     function defineRatioGauge() {
-        Ext.define(WIDGET_NAME, function(data) {
+        Ext.define(WIDGET_NAME, function (data) {
             return {
                 extend: 'Ext.container.Container',
                 cls: 'gauge-button',
@@ -158,12 +161,17 @@
                     borderRadius: '3px'
                 },
                 minHeight: 50,
-                constructor: function(config) {
+                constructor: function (config) {
                     var report = config.report;
-                    var clickHandler = typeof config.onClick === 'function'
-                        ? config.onClick
-                        : Repository.Local.Methods.noOp;
+                    var clickHandler = typeof config.onClick === 'function' ?
+                        config.onClick :
+                        Repository.Local.Methods.noOp;
                     var state = getState(report);
+                    console.dir({
+                        title: report.description,
+                        state: state,
+                        limit: report.limit
+                    });
                     this.style.borderColor = getChoiceFromState(
                         state,
                         '#ebccd1',
@@ -176,6 +184,7 @@
             };
         });
     }
+
     function init() {
         if (!Ext)
             throw new Error(
