@@ -61,6 +61,7 @@
                     series,
                     nullPos;
                 chart.show();
+                chart.ownerCt.show();
                 // chart.hidden = false;
                 
                 // devNote: the following logic is calculation a percentage from the value / sums
@@ -68,7 +69,6 @@
                 // data point should be value / sum of all values that are not unknown.
 
                 Ext.Object.each(gaugeData[regProp], function(key, value) {
-                    debugger;
                     dataFields.push('andel' + i);
                     dataFields.push('antal' + i);
                     graphFields.push('andel' + i);
