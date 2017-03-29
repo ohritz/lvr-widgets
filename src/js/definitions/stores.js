@@ -2,12 +2,12 @@
     Ext.define('RatioGaugeModel', {
         extend: 'Ext.data.Model',
         fields: [
-            {value: 'value', type: 'number'},
-            {name: 'limit', type: 'number'},
+            {name: 'value', type: 'number', mapping: 'Value'},
+            {name: 'limit', type: 'number', mapping: 'malvarde'},
             {name: 'description', type: 'string'},
-            {name: 'descName', type: 'string', allowNull: true},
-            {name: 'indicator', type: 'string'},
-            {name: 'invert', type: 'boolean', defaultValue: false},
+            {name: 'descName', type: 'string', allowNull: true, mapping: 'valuelabel'},
+            {name: 'indicator', type: 'string', mapping: 'valueid'},
+            {name: 'invert', type: 'boolean', defaultValue: false, mapping: 'inverted'},
             {name: 'colors'}
         ]
     });
@@ -27,9 +27,17 @@
         model: 'RatioGaugeModel',
         proxy: {
             type: 'ajax',
-            url: '/stratum/api/statistics/lvr/gaugeWidget',
-            reader: {type: 'json', rootProperty: 'data'},
+            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt/',
+            reader: {type: 'json', rootProperty: 'data.indikatorer'},
+            extraParams: {
+                rinvoke: 1,
+                apikey: 'bK3H9bwaG4o=',
+                unitid: '21',
+                diagnos: '1',
+                panels: '1',
+            },
             noCache: false,
+            withCredentials: true,
             pageParam: '',
             startParam: '',
             limitParam: ''
