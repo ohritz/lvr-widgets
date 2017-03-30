@@ -59,7 +59,7 @@
     }
 
     function getState(report) {
-        return Ext.isDefined(report.limit)
+        return report.limit !== null
             ? (report.value > report.limit ? !report.invert : report.invert)
                 ? 'success'
                 : 'danger'
@@ -157,7 +157,7 @@
                     background: '#f7f7f7',
                     borderRadius: '3px'
                 },
-                minHeight: 50,
+                minHeight: 67,
                 constructor: function(config) {
                     var report = config.report;
                     var clickHandler = typeof config.onClick === 'function'

@@ -1,7 +1,9 @@
 .gauge-btn .x-btn-inner {
     display: block;
 }
-
+.gauge-btn .x-btn-text {
+    vertical-align: top;
+}
 .pull-left {
     float: left;
 }
@@ -12,11 +14,11 @@
 
 .gauge-btn .value-text {
     width: 60px;
-    text-align: right;       
+    text-align: center;       
     font-size: 24px;
     line-height: 24px;
     float: left;
-    margin: 0 8px 0 6px;
+    /*margin: 0 8px 0 6px;*/
 }
 
 .gauge-btn .gauge-desc {

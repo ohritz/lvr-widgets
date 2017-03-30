@@ -3,7 +3,9 @@
         extend: 'Ext.data.Model',
         fields: [
             {name: 'value', type: 'number', mapping: 'Value'},
-            {name: 'limit', type: 'number', mapping: 'malvarde'},
+            {name: 'limit', type: 'number', mapping: 'malvarde', convert: function(v) {
+                return v === 'NA' ? null : parseFloat(v);
+            }},
             {name: 'description', type: 'string'},
             {name: 'descName', type: 'string', allowNull: true, mapping: 'valuelabel'},
             {name: 'indicator', type: 'string', mapping: 'valueid'},
