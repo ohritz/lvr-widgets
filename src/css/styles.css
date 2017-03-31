@@ -39,6 +39,33 @@
     float: right;
     margin: 1px;
 }
+                        
+.gauge-btn.gauge-btn-success {
+    color: #3c763d; 
+    background-color: #dff0d8;
+}
+
+.gauge-btn.gauge-btn-danger {
+    color: #a94442;
+    background-color: #f2dede;
+}
+
+.gauge-btn.gauge-btn-info {
+    color: #31708f; 
+    background-color: #d9edf7;
+}
+
+.gauge-btn.gauge-btn-success.x-btn-over {
+    background-color: #cae0b7;
+}
+
+.gauge-btn.gauge-btn-danger.x-btn-over {
+    background-color: #ebccd1;
+}
+
+.gauge-btn.gauge-btn-info.x-btn-over {
+    background-color: #cbe3f0;
+}
 
 .gauge-btn.gauge-btn-danger .gauge-icon {
     text-shadow: 1px 1px 0px #f00;

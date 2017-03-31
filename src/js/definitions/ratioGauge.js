@@ -95,16 +95,7 @@
                 cls: 'gauge-btn gauge-btn' +
                     getChoiceFromState(state, '-danger', '-success', '-info'),
                 style: {
-                    background: state === 'danger'
-                        ? '#f2dede'
-                        : state === 'success' ? '#dff0d8' : '#d9edf7',
                     borderLeft: '1px solid #ccc',
-                    color: getChoiceFromState(
-                        state,
-                        '#a94442',
-                        '#3c763d',
-                        '#31708f'
-                    ),
                     width: '100%'
                 },
                 // shrinkWrap: false,
