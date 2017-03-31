@@ -98,6 +98,16 @@
             }
         }
 
+        function populateChartData(indicator) {
+            var store = Ext.data.StoreManager.lookup('DetailChartStore');
+            store.load({
+                params: {
+                    indicators: indicator
+                }
+            });
+            console.log(indicator);
+        }
+
         function init() {
             var chart, ratioGauges;
 
