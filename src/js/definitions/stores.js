@@ -1,4 +1,8 @@
 (function() {
+    var API_KEY = 'bK3H9bwaG4o=';
+    var UNIT_ID = '21';
+    var DIAGNOSIS = '1';
+
     Ext.define('RatioGaugeModel', {
         extend: 'Ext.data.Model',
         fields: [
@@ -6,8 +10,8 @@
             {name: 'limit', type: 'number', mapping: 'malvarde', convert: function(v) {
                 return v === 'NA' ? null : parseFloat(v);
             }},
-            {name: 'description', type: 'string'},
-            {name: 'descName', type: 'string', allowNull: true, mapping: 'valuelabel'},
+            {name: 'description', type: 'string', mapping: 'big5namn'},
+            {name: 'descName', type: 'string', allowNull: true, mapping: 'big5description'},
             {name: 'indicator', type: 'string', mapping: 'valueid'},
             {name: 'invert', type: 'boolean', defaultValue: false, mapping: 'inverted'},
             {name: 'colors'}
@@ -33,9 +37,9 @@
             reader: {type: 'json', rootProperty: 'data.indikatorer'},
             extraParams: {
                 rinvoke: 1,
-                apikey: 'bK3H9bwaG4o=',
-                unitid: '21',
-                diagnos: '1',
+                apikey: API_KEY,
+                unitid: UNIT_ID,
+                diagnos: DIAGNOSIS,
                 panels: '1',
             },
             noCache: false,
