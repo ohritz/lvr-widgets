@@ -20,13 +20,57 @@
     Ext.define('DetailChartModel', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'unit', type: 'string', allowNull: true},
-            {name: 'value', type: 'number', allowNull: true}
+            {name: 'unit', type: 'string', allowNull: true, mapping: 'Enhet'},
+            {name: 'value', type: 'number', allowNull: true, mapping: 'Andel'}
         ]
     });
     Ext.create('Ext.data.Store', {
         storeId: 'DetailChartStore',
-        model: 'DetailChartModel'
+        model: 'DetailChartModel',
+        autoLoad: true,
+        proxy: {
+            type: 'ajax',
+            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt',
+            reader: {
+                type: 'json',
+                rootProperty: 'data', 
+                transform: function (data) {
+                    var newData = [];
+                    var unitData = {};
+                    Ext.each(data.data, function(x) {
+                        unitData[x.Enhet] = unitData[x.Enhet] || [];
+                        unitData[x.Enhet].push(x);
+                    });
+                    Ext.Object.eachValue(unitData, function(unit) {
+                        var tVal = {};
+                        var i = 1;
+                        Ext.Object.eachValue(unit, function(val) {
+                            tVal['total' + (i)] = val.Antal;
+                            tVal['ratio' + (i)] = val.Andel;
+                            tVal['title' + (i)] = val.Utfall;
+                            tVal['freq' + (i)] = val.Svarsfrekvens;
+                            tVal['unit'] = val.Enhet;
+                            i++;
+                        });
+                        newData.push(tVal);
+                    });
+                    console.table(newData);
+                    console.log(data);
+                    return newData;
+                }
+            },
+            extraParams: {
+                apikey: API_KEY,
+                unitid: UNIT_ID,
+                diagnos: DIAGNOSIS,
+                panels: '0',
+                indicators: '1002'
+            },
+            withCredentials: true,
+            pageParam: false,
+            startParam: false,
+            limitParam: false
+        }
     });
     Ext.create('Ext.data.Store', {
         storeId: 'ratioGaugeStore',

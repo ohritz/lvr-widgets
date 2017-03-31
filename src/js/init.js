@@ -62,20 +62,22 @@
             return function loadChartAndShow() {
                 // toast('Laddar data...');
 
-                Repository.Local.Methods.getChartData(this.report.id, function (
-                    err,
-                    payload
-                ) {
-                    if (err) {
-                        toast("Kunde inte hämta data, var god försök igen senare.");
-                        return Ext.log(err);
-                    }
-                    Repository.Local.Methods.loadMainChart(
-                        payload.id,
-                        chart,
-                        payload.data
-                    );
-                });
+                populateChartData(this.report.indicator);
+
+                // Repository.Local.Methods.getChartData(this.report.indicator, function (
+                //     err,
+                //     payload
+                // ) {
+                //     if (err) {
+                //         toast("Kunde inte hämta data, var god försök igen senare.");
+                //         return Ext.log(err);
+                //     }
+                //     Repository.Local.Methods.loadMainChart(
+                //         payload.id,
+                //         chart,
+                //         payload.data
+                //     );
+                // });
             };
         }
 
