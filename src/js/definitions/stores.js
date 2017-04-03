@@ -17,12 +17,42 @@
             {name: 'colors'}
         ]
     });
+    Ext.define('TableModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'value', type: 'number', allowNull: true, mapping: 'V1'},
+            {name: 'description', mapping: 'V2'}
+        ]
+    });
     Ext.define('DetailChartModel', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'unit', type: 'string', allowNull: true, mapping: 'Enhet'},
             {name: 'value', type: 'number', allowNull: true, mapping: 'Andel'}
         ]
+    });
+    Ext.create('Ext.data.Store', {
+        storeId: 'TableStore',
+        model: 'TableModel',
+        autoLoad: true,
+        proxy: {
+            type: 'ajax',
+            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt',
+            reader: {
+                type: 'json',
+                rootProperty: 'data.tabell', 
+            },
+            extraParams: {
+                apikey: API_KEY,
+                unitid: UNIT_ID,
+                diagnos: DIAGNOSIS,
+                panels: '1'
+            },
+            withCredentials: true,
+            pageParam: false,
+            startParam: false,
+            limitParam: false
+        }
     });
     Ext.create('Ext.data.Store', {
         storeId: 'DetailChartStore',
@@ -54,8 +84,6 @@
                         });
                         newData.push(tVal);
                     });
-                    console.table(newData);
-                    console.log(data);
                     return newData;
                 }
             },

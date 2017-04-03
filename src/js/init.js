@@ -62,8 +62,8 @@
             return function loadChartAndShow() {
                 // toast('Laddar data...');
 
-                populateChartData(this.report.indicator);
-
+                chart.setLoading('Laddar data...');
+                populateChartData(chart, this.report.indicator, this.report.big5description);
                 // Repository.Local.Methods.getChartData(this.report.indicator, function (
                 //     err,
                 //     payload
@@ -97,20 +97,105 @@
                 });
             }
         }
-
-        function populateChartData(indicator) {
+        function getChartFields(store, fieldType) {
+            var record = store.getAt(0);
+            var fields = [];
+            if(record) {
+                Ext.each(Ext.Object.getKeys(record.data), function(field) {
+                    if(field.indexOf(fieldType) === 0){
+                        fields.push(field);
+                    }
+                })
+            }
+            return fields;
+        }
+        function getChartTitles(store) {
+            titles = [];
+            titleFields = getChartFields(store, 'title');
+            Ext.each(titleFields, function(title){
+               titles.push(store.getAt(0).get(title)); 
+            });
+            return titles;
+        }
+        function populateChartData(chart, indicator, description) {
             var store = Ext.data.StoreManager.lookup('DetailChartStore');
             store.load({
                 params: {
                     indicators: indicator
+                },
+                callback: function(records, operation, success) {
+                    var graphFields = getChartFields(store, 'ratio');
+                    try {
+                        chart.getSeries().length > 0 &&
+                        chart.getSeries()[0].getSurface().removeAll();
+                        chart.setLoading(false);
+                        chart.show();
+                    } catch (e) {
+                        Ext.log(e);
+                    }
+                    chart.setSeries({
+                        type: 'bar',
+                        // axis: 'left',
+                        groupGutter: 0,
+                        xField: 'unit',
+                        yField: graphFields,
+                        //must be set to avoid vml-bug in ie8
+                        xPadding: 30,
+                        stacked: false,
+                        title: getChartTitles(store),
+                        tooltip: {
+                            // trackMouse: true,
+                            renderer: function(record, item) {
+                                var antal = 'total', field = item.field;
+                                if (field.indexOf('ratio') === 0) {
+                                    antal += field.substr(5);
+                                    this.setHtml(
+                                        Ext.String.format(
+                                            '<b>{1}</b><br/>{0} observationer',
+                                            record.get(antal),
+                                            Ext.util.Format.number(
+                                                record.get(item.field),
+                                                '0.0%'
+                                            )
+                                        )
+                                    );
+                                }
+                            }
+                        },
+                        // colors: Ext.Array.insert(
+                        //     gaugeData.colors.slice(0),
+                        //     nullPos,
+                        //     ['#AAA38E']
+                        // )
+                    });
+                    chart.setSprites({
+                        type: 'text',
+                        text: description,
+                        textAlign: 'middle',
+                        fontSize: 20,
+                        width: chart.getWidth(),
+                        height: 30,
+                        x: chart.getWidth() / 2,
+                        y: 30
+                    });
                 }
             });
             console.log(indicator);
         }
-
-        function init() {
+        function createTable () {
+            return Ext.create('Ext.grid.Panel', {
+                store: Ext.StoreManager.lookup('TableStore'),
+                columnWidth: 1,
+                width: '100%',
+                columns: [
+                    { text: 'Beskrivning', flex: 1, dataIndex: 'description' },
+                    { text: 'Värde', dataIndex: 'value' }
+                ],
+            });
+        }
+        function init(container) {
             var chart, ratioGauges;
-
+            table = createTable();
             chart = createChart();
             ratioGauges = createRatioGaugesContainer(
                 onGaugeClickFactory(chart)
@@ -121,16 +206,16 @@
             });
 
             Ext.create('Ext.container.Container', {
-                renderTo: 'mainContainer',
+                renderTo: container,
                 layout: {
                     type: 'column',
                     align: 'center'
                 },
-                items: [ratioGauges, chart]
+                items: [table, ratioGauges, chart]
             });
 
             populateRatioGaugeStore(function () {
-                Ext.fly('mainContainer').unmask();
+                Ext.fly(container).unmask();
             });
         }
         return {
@@ -138,11 +223,12 @@
         };
     }();
 
+    var mainContainer = 'mainContainer';
     Ext.application({
         name: 'LVR-ratioGauges',
         launch: function () {
             Ext.fly('mainContainer').mask('Laddar data ...');
-            widget.init();
+            widget.init(mainContainer);
         }
     });
 })();
