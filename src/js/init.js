@@ -25,6 +25,7 @@
                     border: '1px solid #ddd',
                     borderRadius: '3px'
                 },
+                colors: ['#206876', '#04859d', '#37b6ce', '#5fbdce', '#015666'],
                 legend: {
                     // boxStrokeWidth: 0
                     dock: 'bottom'

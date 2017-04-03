@@ -12,6 +12,7 @@
             }},
             {name: 'description', type: 'string', mapping: 'big5namn'},
             {name: 'descName', type: 'string', allowNull: true, mapping: 'big5description'},
+            {name: 'tooltip', type: 'string', mapping: 'big5mouseover'},
             {name: 'indicator', type: 'string', mapping: 'valueid'},
             {name: 'invert', type: 'boolean', defaultValue: false, mapping: 'inverted'},
             {name: 'colors'}

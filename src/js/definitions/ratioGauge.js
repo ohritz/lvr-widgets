@@ -105,16 +105,7 @@
                     value: Ext.util.Format.number(report.value || 0, '0%')
                 },
                 textAlign: 'left',
-                tooltip: '<div>' +
-                    getChoiceFromState(
-                        state,
-                        'Registrets mål på <b>' + report.limit +
-                            '%</b> är inte uppnått ännu', // todo: change message if inverted?
-                        'Registrets mål på <b>' + report.limit +
-                            '%</b> är uppnått!',
-                        'Beskrivande indikator som saknar målvärde'
-                    ) +
-                    '</div><i>Klicka för komplett fördelning</i>',
+                tooltip: '<div>' + report.tooltip + '</div>',
                 // height: 40,
                 tpl: '<div style="position:relative;">' +
                     '<div class="value-text pull-left">{value}</div>' +
@@ -148,7 +139,7 @@
                     background: '#f7f7f7',
                     borderRadius: '3px'
                 },
-                minHeight: 67,
+                minHeight: 50,
                 constructor: function(config) {
                     var report = config.report;
                     var clickHandler = typeof config.onClick === 'function'
