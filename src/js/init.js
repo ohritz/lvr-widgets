@@ -58,27 +58,11 @@
             return ratioGCont;
         }
 
-        function onGaugeClickFactory(chart) {
+        function onGaugeClickFactory(chart, callback) {
             var store = chart.getStore();
             return function loadChartAndShow() {
-                // toast('Laddar data...');
-
                 chart.setLoading('Laddar data...');
-                populateChartData(chart, this.report.indicator, this.report.big5description);
-                // Repository.Local.Methods.getChartData(this.report.indicator, function (
-                //     err,
-                //     payload
-                // ) {
-                //     if (err) {
-                //         toast("Kunde inte hämta data, var god försök igen senare.");
-                //         return Ext.log(err);
-                //     }
-                //     Repository.Local.Methods.loadMainChart(
-                //         payload.id,
-                //         chart,
-                //         payload.data
-                //     );
-                // });
+                populateChartData(chart, this.report.indicator, this.report.big5description, callback);
             };
         }
 
@@ -118,7 +102,17 @@
             });
             return titles;
         }
-        function populateChartData(chart, indicator, description) {
+        function scrollToElement(element) {
+            if (!element || !element.getY) {
+                return;
+            }
+            (Ext.isChrome
+                ? Ext.getBody()
+                : Ext.get(
+                    document.documentElement
+                )).scrollTo('top', element.getY(), true);
+        }
+        function populateChartData(chart, indicator, description, callback) {
             var store = Ext.data.StoreManager.lookup('DetailChartStore');
             store.load({
                 params: {
@@ -131,6 +125,8 @@
                         chart.getSeries()[0].getSurface().removeAll();
                         chart.setLoading(false);
                         chart.show();
+                        scrollToElement(chart.getEl());
+                        Ext.isFunction(callback) && callback();
                     } catch (e) {
                         Ext.log(e);
                     }
@@ -188,20 +184,57 @@
                 store: Ext.StoreManager.lookup('TableStore'),
                 columnWidth: 1,
                 width: '100%',
+                // header: false,
+                hideHeaders: true,
+                disableSelection: true,
                 columns: [
-                    { text: 'Beskrivning', flex: 1, dataIndex: 'description' },
+                    { text: 'Beskrivning', cellWrap: true, flex: 1, dataIndex: 'description' },
                     { text: 'Värde', dataIndex: 'value' }
                 ],
             });
+        }
+        function createFrequenceGauge () {
+            var chart = Ext.create({
+                xtype: 'heatgauge',
+                style: {},
+                margin: '8 0 0 0',
+                limitField: 'limit',
+                invertLimitField: 'invert',
+                store: Ext.StoreManager.lookup('DetailChartStore'),
+                valueField: 'freq',
+                hidden: true,
+                background: '#fff',
+                width: 400,
+                height: 90,
+                insetPadding: {
+                    top: 25,
+                    right: 25,
+                    left: 25,
+                    bottom: 25
+                },
+                sprites: [{ 
+                    type: 'text',
+                    text: 'Enhetens svarsfrekvens för indikatorn',
+                    textAlign: 'middle',
+                    fontSize: 20,
+                    width: 400,
+                    height: 30,
+                    x: 400/2,
+                    y: 18
+                }]
+            });
+            return chart;
         }
         function init(container) {
             var chart, ratioGauges;
             table = createTable();
             chart = createChart();
+            frequencyGauge = createFrequenceGauge();
             ratioGauges = createRatioGaugesContainer(
-                onGaugeClickFactory(chart)
+                onGaugeClickFactory(chart, function () {
+                    frequencyGauge.show();
+                })
             );
-
             Ext.tip.QuickTipManager.init(true, {
                 dismissDelay: 0
             });
@@ -209,10 +242,10 @@
             Ext.create('Ext.container.Container', {
                 renderTo: container,
                 layout: {
-                    type: 'column',
+                    type: 'vbox',
                     align: 'center'
                 },
-                items: [table, ratioGauges, chart]
+                items: [table, ratioGauges, chart, frequencyGauge]
             });
 
             populateRatioGaugeStore(function () {

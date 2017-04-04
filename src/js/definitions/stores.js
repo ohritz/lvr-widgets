@@ -79,7 +79,7 @@
                             tVal['total' + (i)] = val.Antal;
                             tVal['ratio' + (i)] = val.Andel;
                             tVal['title' + (i)] = val.Utfall;
-                            tVal['freq' + (i)] = val.Svarsfrekvens;
+                            tVal['freq'] = parseFloat(val.Svarsfrekvens);
                             tVal['unit'] = val.Enhet;
                             i++;
                         });
