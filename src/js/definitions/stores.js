@@ -99,6 +99,9 @@
             pageParam: false,
             startParam: false,
             limitParam: false
+        },
+        sorters: function(record) {
+            return record.unit === 'Riket' ? -1 : 1;
         }
     });
     Ext.create('Ext.data.Store', {
