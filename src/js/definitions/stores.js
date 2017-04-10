@@ -1,7 +1,7 @@
 (function() {
-    var API_KEY = 'bK3H9bwaG4o=';
-    var UNIT_ID = '21';
-    var DIAGNOSIS = '1';
+    // var API_KEY = 'bK3H9bwaG4o=';
+    // var UNIT_ID = '21';
+    // var DIAGNOSIS = '1';
 
     Ext.define('RatioGaugeModel', {
         extend: 'Ext.data.Model',
@@ -15,13 +15,14 @@
             {name: 'tooltip', type: 'string', mapping: 'big5mouseover'},
             {name: 'indicator', type: 'string', mapping: 'valueid'},
             {name: 'invert', type: 'boolean', defaultValue: false, mapping: 'inverted'},
+            {name: 'frequency', type: 'number', mapping: 'Svarsfrekvens'},
             {name: 'colors'}
         ]
     });
     Ext.define('TableModel', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'value', type: 'number', allowNull: true, mapping: 'V1'},
+            {name: 'value', type: 'string', allowNull: true, mapping: 'V1'},
             {name: 'description', mapping: 'V2'}
         ]
     });
@@ -35,18 +36,18 @@
     Ext.create('Ext.data.Store', {
         storeId: 'TableStore',
         model: 'TableModel',
-        autoLoad: true,
+        autoLoad: false,
         proxy: {
             type: 'ajax',
-            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt',
+            url: '/stratum/api/statistics/lvr/snabboversikt',
             reader: {
                 type: 'json',
                 rootProperty: 'data.tabell', 
             },
             extraParams: {
-                apikey: API_KEY,
-                unitid: UNIT_ID,
-                diagnos: DIAGNOSIS,
+                // apikey: API_KEY,
+                // unitid: UNIT_ID,
+                // diagnos: DIAGNOSIS,
                 panels: '1'
             },
             withCredentials: true,
@@ -58,10 +59,10 @@
     Ext.create('Ext.data.Store', {
         storeId: 'DetailChartStore',
         model: 'DetailChartModel',
-        autoLoad: true,
+        autoLoad: false,
         proxy: {
             type: 'ajax',
-            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt',
+            url: '/stratum/api/statistics/lvr/snabboversikt',
             reader: {
                 type: 'json',
                 rootProperty: 'data', 
@@ -89,9 +90,9 @@
                 }
             },
             extraParams: {
-                apikey: API_KEY,
-                unitid: UNIT_ID,
-                diagnos: DIAGNOSIS,
+                // apikey: API_KEY,
+                // unitid: UNIT_ID,
+                // diagnos: DIAGNOSIS,
                 panels: '0',
                 indicators: '1002'
             },
@@ -109,13 +110,13 @@
         model: 'RatioGaugeModel',
         proxy: {
             type: 'ajax',
-            url: 'https://stratum.registercentrum.se/api/statistics/lvr/snabboversikt/',
+            url: '/stratum/api/statistics/lvr/snabboversikt/',
             reader: {type: 'json', rootProperty: 'data.indikatorer'},
             extraParams: {
                 rinvoke: 1,
-                apikey: API_KEY,
-                unitid: UNIT_ID,
-                diagnos: DIAGNOSIS,
+                // apikey: API_KEY,
+                // unitid: UNIT_ID,
+                // diagnos: DIAGNOSIS,
                 panels: '1',
             },
             noCache: false,

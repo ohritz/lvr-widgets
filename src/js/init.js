@@ -1,13 +1,29 @@
 (function () {
+
+    /**
+     * External widget configuration through stratum widget api params 
+     */
+    var isTemplate = window.isTemplate || function() {
+        return true;
+    }
+    var templateVariables = window._devTemplateVariables || {
+        diagnosis: '{{diagnosis}}',
+        container: '{{ct}}'
+    };
+    var config = {
+        unitId: typeof Profile !== 'undefined' ? Profile.Context.Unit.UnitCode : null,
+        diagnosis: !isTemplate(templateVariables.diagnosis) ? templateVariables.diagnosis : 1,
+        container: !isTemplate(templateVariables.container) ? templateVariables.container
+            : (typeof Stratum !== 'undefined' && Stratum.containers && Stratum.containers['LVR/NewOverview'] || 'mainContainer')
+    };
+    
     var widget = function () {
         function toast(msg) {
             Ext.toast(msg, '', 't');
         }
-
         function createChart() {
             var chart = Ext.create('Ext.chart.Chart', {
                 store: Ext.data.StoreManager.lookup('DetailChartStore'),
-                // theme: 'LVRTheme',
                 hidden: true,
                 animate: true,
                 shadow: false,
@@ -66,11 +82,21 @@
             };
         }
 
-        function populateRatioGaugeStore(cb) {
+        function populateTableData(config) {
+            var tableStore = Ext.StoreManager.lookup('TableStore');
+            tableStore.load({
+                params: {
+                    diagnos: config.diagnosis
+                }
+            });
+        }
+        function populateRatioGaugeStore(config, cb) {
             var store = Ext.data.StoreManager.lookup('ratioGaugeStore');
             if (!store.isLoaded() && !store.isLoading()) {
                 store.load({
-                    params: {},
+                    params: {
+                        diagnos: config.diagnosis
+                    },
                     callback: function (records, operation, success) {
                         if (success) {
                             return cb();
@@ -126,7 +152,7 @@
                         chart.setLoading(false);
                         chart.show();
                         scrollToElement(chart.getEl());
-                        Ext.isFunction(callback) && callback();
+                        Ext.isFunction(callback) && callback(records);
                     } catch (e) {
                         Ext.log(e);
                     }
@@ -158,12 +184,7 @@
                                     );
                                 }
                             }
-                        },
-                        // colors: Ext.Array.insert(
-                        //     gaugeData.colors.slice(0),
-                        //     nullPos,
-                        //     ['#AAA38E']
-                        // )
+                        }
                     });
                     chart.setSprites({
                         type: 'text',
@@ -177,14 +198,15 @@
                     });
                 }
             });
-            console.log(indicator);
         }
         function createTable () {
             return Ext.create('Ext.grid.Panel', {
                 store: Ext.StoreManager.lookup('TableStore'),
                 columnWidth: 1,
                 width: '100%',
-                // header: false,
+                margin: {
+                    bottom: 20
+                },
                 hideHeaders: true,
                 disableSelection: true,
                 columns: [
@@ -205,39 +227,48 @@
                 hidden: true,
                 background: '#fff',
                 width: 400,
-                height: 90,
+                height: 95,
                 insetPadding: {
-                    top: 25,
+                    top: 30,
                     right: 25,
                     left: 25,
                     bottom: 25
-                },
-                sprites: [{ 
-                    type: 'text',
-                    text: 'Enhetens svarsfrekvens för indikatorn',
-                    textAlign: 'middle',
-                    fontSize: 20,
-                    width: 400,
-                    height: 30,
-                    x: 400/2,
-                    y: 18
-                }]
+                }
             });
             return chart;
         }
-        function init(container) {
+        function init(container, config) {
             var chart, ratioGauges;
+            populateTableData(config);
             table = createTable();
             chart = createChart();
             frequencyGauge = createFrequenceGauge();
             ratioGauges = createRatioGaugesContainer(
-                onGaugeClickFactory(chart, function () {
+                onGaugeClickFactory(chart, function (records) {
+                    var frequency = records && records[1].get('freq');
+                    frequencyGauge.setSprites([{ 
+                        type: 'text',
+                        text: 'Enhetens svarsfrekvens för indikatorn',
+                        textAlign: 'middle',
+                        fontSize: 20,
+                        width: 400,
+                        height: 30,
+                        x: 400/2,
+                        y: 18
+                    },{ 
+                        type: 'text',
+                        text: Ext.util.Format.number(frequency, '0 %'),
+                        textAlign: 'middle',
+                        fontSize: 20,
+                        width: 400,
+                        height: 30,
+                        x: 400/2 + 3,
+                        y: frequencyGauge.height
+                    }]);
+                    
                     frequencyGauge.show();
                 })
             );
-            Ext.tip.QuickTipManager.init(true, {
-                dismissDelay: 0
-            });
 
             Ext.create('Ext.container.Container', {
                 renderTo: container,
@@ -248,7 +279,7 @@
                 items: [table, ratioGauges, chart, frequencyGauge]
             });
 
-            populateRatioGaugeStore(function () {
+            populateRatioGaugeStore(config, function () {
                 Ext.fly(container).unmask();
             });
         }
@@ -257,12 +288,14 @@
         };
     }();
 
-    var mainContainer = 'mainContainer';
     Ext.application({
         name: 'LVR-ratioGauges',
         launch: function () {
-            Ext.fly('mainContainer').mask('Laddar data ...');
-            widget.init(mainContainer);
+            var container = Ext.fly(config.container);
+            if (container){
+                container.mask('Laddar data ...');
+                widget.init(container, config);
+            }
         }
     });
 })();
