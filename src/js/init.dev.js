@@ -10,7 +10,7 @@
     });
     Ext.data.Store.override({
         load: function(val) {
-            this.proxy.url = 'https://stratum.registercentrum.se' + this.proxy.url;
+            this.proxy.url = this.proxy.url && this.proxy.url.indexOf('/') === 0 ? ('https://stratum.registercentrum.se' + this.proxy.url) : this.proxy.url;
             this.callParent(arguments);
             return this;
         }
