@@ -75,7 +75,7 @@ gulp.task('styles:build', ['clean:build'], () => {
 });
 
 gulp.task('scripts:build', ['clean:build', 'styles:build'], () => {
-    return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`, `${config.tmp}/js/styles.js`])
+    return gulp.src([config.js, `!${config.src}/js/StatKOLSV.js`, `!${config.src}/js/widget.js`, `${config.tmp}/js/styles.js`, `!${config.src}/js/**/*.dev.js`])
         // .pipe(sourcemaps.init())
         .pipe(order([
             'definitions/*.js',
