@@ -1,7 +1,9 @@
 .gauge-btn .x-btn-inner {
     display: block;
 }
-
+.gauge-btn .x-btn-text {
+    vertical-align: top;
+}
 .pull-left {
     float: left;
 }
@@ -11,12 +13,12 @@
 }
 
 .gauge-btn .value-text {
-    width: 60px;
-    text-align: right;       
+    width: 65px;
+    text-align: center;       
     font-size: 24px;
     line-height: 24px;
     float: left;
-    margin: 0 8px 0 6px;
+    /*margin: 0 8px 0 6px;*/
 }
 
 .gauge-btn .gauge-desc {
@@ -36,6 +38,42 @@
     font-family: fontawesome;
     float: right;
     margin: 1px;
+}
+                        
+.gauge-btn.gauge-btn-success {
+    color: #3c763d; 
+    background-color: #dff0d8;
+}
+
+.gauge-btn.gauge-btn-danger {
+    color: #a94442;
+    background-color: #f2dede;
+}
+
+.gauge-btn.gauge-btn-info {
+    color: #31708f; 
+    background-color: #d9edf7;
+}
+
+.gauge-btn.gauge-btn-insufficient {
+    color: #858585; 
+    background-color: #e0e0e0;
+}
+
+.gauge-btn.gauge-btn-success.x-btn-over {
+    background-color: #cae0b7;
+}
+
+.gauge-btn.gauge-btn-danger.x-btn-over {
+    background-color: #ebccd1;
+}
+
+.gauge-btn.gauge-btn-info.x-btn-over {
+    background-color: #cbe3f0;
+}
+
+.gauge-btn.gauge-btn-insufficient.x-btn-over {
+    background-color: #cecece;
 }
 
 .gauge-btn.gauge-btn-danger .gauge-icon {

@@ -1,6 +1,7 @@
 (function(Ext) {
     var WIDGET_NAME = 'RC.ui.RatioGauge';
     var HEATGUAGE_NAME = 'RC.ui.HeateGuage';
+    var FREQUENCE_LIMIT = 60;
 
     function defineHeatGauge() {
         Ext.define(HEATGUAGE_NAME, {
@@ -47,23 +48,29 @@
             insetPadding: 0
         });
     }
-    function getChoiceFromState(state, danger, success, standard) {
+    function getChoiceFromState(state, danger, success, standard, insufficient) {
         switch (state) {
             case 'danger':
                 return danger;
             case 'success':
                 return success;
+            case 'insufficient':
+                return insufficient;
             default:
                 return standard;
         }
     }
 
     function getState(report) {
-        return Ext.isDefined(report.limit)
-            ? (report.value > report.limit ? !report.invert : report.invert)
+        if (report.limit !== null) {
+            if (report.Svarsfrekvens < FREQUENCE_LIMIT) {
+                return 'insufficient';
+            }
+            return (report.value > report.limit ? !report.invert : report.invert)
                 ? 'success'
                 : 'danger'
-            : '';
+        }
+        return '';
     }
     function itemsFactory(report, state, clickHandler) {
         return [
@@ -93,18 +100,9 @@
                 toggleGroup: 'heatg',
                 pressedCls: 'gauge-button-pressed',
                 cls: 'gauge-btn gauge-btn' +
-                    getChoiceFromState(state, '-danger', '-success', '-info'),
+                    getChoiceFromState(state, '-danger', '-success', '-info', '-insufficient'),
                 style: {
-                    background: state === 'danger'
-                        ? '#f2dede'
-                        : state === 'success' ? '#dff0d8' : '#d9edf7',
                     borderLeft: '1px solid #ccc',
-                    color: getChoiceFromState(
-                        state,
-                        '#a94442',
-                        '#3c763d',
-                        '#31708f'
-                    ),
                     width: '100%'
                 },
                 // shrinkWrap: false,
@@ -114,22 +112,13 @@
                     value: Ext.util.Format.number(report.value || 0, '0%')
                 },
                 textAlign: 'left',
-                tooltip: '<div>' +
-                    getChoiceFromState(
-                        state,
-                        'Registrets mål på <b>' + report.limit +
-                            '%</b> är inte uppnått ännu', // todo: change message if inverted?
-                        'Registrets mål på <b>' + report.limit +
-                            '%</b> är uppnått!',
-                        'Beskrivande indikator som saknar målvärde'
-                    ) +
-                    '</div><i>Klicka för komplett fördelning</i>',
+                tooltip: '<div>' + report.tooltip + '</div>',
                 // height: 40,
                 tpl: '<div style="position:relative;">' +
                     '<div class="value-text pull-left">{value}</div>' +
                     '<div class="gauge-desc pull-left">{text}</div>' +
                     '<div class="gauge-icon pull-right">' +
-                    getChoiceFromState(state, '&#xf071;', '&#xf00c;', '') +
+                    getChoiceFromState(state, '&#xf071;', '&#xf00c;', '', '') +
                     '</div>' +
                     '</div>',
                 listeners: {
@@ -168,7 +157,8 @@
                         state,
                         '#ebccd1',
                         '#d6e9c6',
-                        '#bce8f1'
+                        '#bce8f1',
+                        '#ccc'
                     );
                     config.items = itemsFactory(report, state, clickHandler);
                     this.callParent(arguments);
